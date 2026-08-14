@@ -59,6 +59,10 @@ mcp__metrics-mcp__ 로 시작하는 MCP 도구를 사용해서
 
 ![결과 화면](docs/images/03-result.png)
 
+스킬 관리 창에서 카드 이름·색·단축키·실행 옵션을 손본다. 화면 그림은 모두 `docs/images/` 에 있다.
+
+![스킬 관리 창](docs/images/04-library.png)
+
 ## 요구 사항
 
 - macOS 14 이상 (개발·검증은 macOS 26.3 에서 했다)
