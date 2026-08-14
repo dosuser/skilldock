@@ -1,0 +1,13 @@
+# 빌드 산출물
+build/
+*.app
+*.dSYM
+.build/
+
+# macOS
+.DS_Store
+
+# 로컬 설정·비밀값 (설정은 ~/.config/skilldock/config.json 에 저장된다)
+config.json
+*.pem
+.env
