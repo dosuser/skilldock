@@ -8,6 +8,21 @@
 
 위 목록에서 **▶ 표시가 붙은 카드는 누르면 곧바로 실행**된다. 사람만 알 수 있는 값(검색어 등)이 남은 카드만 `입력 1개 필요`로 표시되고 폼이 먼저 열린다.
 
+## 설치
+
+### Homebrew (권장)
+
+```bash
+brew tap dosuser/skilldock
+brew install --cask skilldock
+```
+
+ad-hoc 서명 빌드라 Apple 공증이 없다. Cask 가 설치 직후 Gatekeeper quarantine 속성을 제거하므로 별도 조치 없이 바로 실행된다. 업데이트는 `brew upgrade --cask skilldock`, 삭제는 `brew uninstall --cask skilldock` (설정까지 지우려면 `--zap` 추가).
+
+### 소스에서 빌드
+
+최신 개발 버전이 필요하거나 직접 수정하려면 [빌드](#빌드) 섹션을 따른다.
+
 ## 원클릭이 성립하는 방식
 
 | 단계 | 하는 일 |
