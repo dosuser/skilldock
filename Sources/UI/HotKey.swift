@@ -21,10 +21,10 @@ final class HotKeyCenter {
         let id = nextID
         nextID += 1
         var ref: EventHotKeyRef?
-        let hotKeyID = EventHotKeyID(signature: OSType(0x534B444B) /* 'SKDK' */, id: id)
+        let hotKeyID = EventHotKeyID(signature: OSType(0x534F4D55) /* 'SOMU' */, id: id)
         let status = RegisterEventHotKey(keyCode, modifiers, hotKeyID, GetEventDispatcherTarget(), 0, &ref)
         guard status == noErr, let ref else {
-            NSLog("SkillDock: 단축키 등록 실패 (status \(status))")
+            NSLog("SkillsOnMenu: hotkey registration failed (status \(status))")
             return nil
         }
         refs[id] = ref

@@ -5,15 +5,15 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>ko</string>
     <key>CFBundleExecutable</key>
-    <string>SkillDock</string>
+    <string>SkillsOnMenu</string>
     <key>CFBundleIdentifier</key>
-    <string>com.dosuser.skilldock</string>
+    <string>com.dosuser.skillsonmenu</string>
     <key>CFBundleInfoDictionaryVersion</key>
     <string>6.0</string>
     <key>CFBundleName</key>
-    <string>SkillDock</string>
+    <string>SkillsOnMenu</string>
     <key>CFBundleDisplayName</key>
-    <string>SkillDock</string>
+    <string>SkillsOnMenu</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
@@ -27,7 +27,7 @@
     <key>LSUIElement</key>
     <true/>
     <key>NSHumanReadableCopyright</key>
-    <string>SkillDock — Claude Code 스킬 런처</string>
+    <string>SkillsOnMenu — Claude Code skill launcher for macOS</string>
     <key>NSSupportsAutomaticTermination</key>
     <false/>
     <key>NSSupportsSuddenTermination</key>

@@ -18,7 +18,7 @@ final class Notifier: NSObject, UNUserNotificationCenterDelegate {
         center.delegate = self
         center.requestAuthorization(options: [.alert, .sound]) { granted, error in
             self.authorized = granted
-            if let error { NSLog("SkillDock: 알림 권한 요청 실패 — \(error.localizedDescription)") }
+            if let error { NSLog("SkillsOnMenu: notification authorization failed — \(error.localizedDescription)") }
         }
     }
 

@@ -86,9 +86,9 @@ struct PopoverRootView: View {
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                 } else {
                     EmptyStateView(symbol: "questionmark.folder",
-                                   title: "스킬을 찾을 수 없습니다",
-                                   message: "삭제된 스킬입니다.",
-                                   actionTitle: "목록으로") { router.home() }
+                                   title: "Skill not found",
+                                   message: "This skill has been removed.",
+                                   actionTitle: "Back to list") { router.home() }
                 }
             }
         }
@@ -120,9 +120,9 @@ struct HomeView: View {
             header
             if store.config.cards.isEmpty {
                 EmptyStateView(symbol: "square.stack.3d.up.slash",
-                               title: "등록된 스킬이 없습니다",
-                               message: "스킬을 등록하면 여기에서 바로 실행할 수 있습니다.\n스킬은 자동으로 찾아 목록에서 골라 담습니다.",
-                               actionTitle: "스킬 등록하기") { onOpenLibrary() }
+                               title: "No saved skills",
+                               message: "Add a skill to run it here.\nSkillsOnMenu finds available skills automatically.",
+                               actionTitle: "Add a skill") { onOpenLibrary() }
             } else {
                 searchField
                 list
@@ -141,8 +141,8 @@ struct HomeView: View {
                 .overlay(Image(systemName: "bolt.fill").font(.system(size: 12, weight: .bold))
                     .foregroundStyle(.white))
             VStack(alignment: .leading, spacing: 0) {
-                Text("SkillDock").font(Theme.title(14, .bold))
-                Text("스킬 하나를 바로 실행합니다")
+                Text("SkillsOnMenu").font(Theme.title(14, .bold))
+                Text("Run any skill in one click")
                     .font(.system(size: 10))
                     .foregroundStyle(.secondary)
             }
@@ -151,7 +151,7 @@ struct HomeView: View {
                 Image(systemName: "slider.horizontal.3").font(.system(size: 12, weight: .medium))
             }
             .buttonStyle(.plain)
-            .help("스킬 관리 · 설정")
+            .help("Manage skills and settings")
         }
         .padding(.horizontal, 14)
         .padding(.top, 13)
@@ -161,7 +161,7 @@ struct HomeView: View {
     private var searchField: some View {
         HStack(spacing: 6) {
             Image(systemName: "magnifyingglass").font(.system(size: 11)).foregroundStyle(.secondary)
-            TextField("스킬 검색", text: $router.search)
+            TextField("Search skills", text: $router.search)
                 .textFieldStyle(.plain)
                 .font(.system(size: 12))
             if !router.search.isEmpty {
@@ -193,7 +193,7 @@ struct HomeView: View {
                              onOpenForm: { router.open(card: card) })
                 }
                 if filtered.isEmpty {
-                    Text("검색 결과가 없습니다")
+                    Text("No results")
                         .font(.system(size: 11.5)).foregroundStyle(.secondary)
                         .padding(.top, 24)
                 }
@@ -217,7 +217,7 @@ struct HomeView: View {
             Button {
                 onOpenLibrary()
             } label: {
-                Label("스킬 추가", systemImage: "plus")
+                Label("Add skill", systemImage: "plus")
                     .font(.system(size: 11.5, weight: .medium))
             }
             .buttonStyle(SubtleButtonStyle())
@@ -237,7 +237,7 @@ struct HomeView: View {
                 Image(systemName: "power").font(.system(size: 11))
             }
             .buttonStyle(.plain)
-            .help("SkillDock 종료")
+            .help("Quit SkillsOnMenu")
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 9)
@@ -287,7 +287,7 @@ private struct SkillRow: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help(oneClick ? "누르면 바로 실행합니다" : "입력값을 채우고 실행합니다")
+            .help(oneClick ? "Run immediately" : "Fill in inputs before running")
 
             // 원클릭 카드에서도 값을 바꿔 실행할 수 있는 통로를 남긴다.
             if oneClick, hovering {
@@ -298,7 +298,7 @@ private struct SkillRow: View {
                         .padding(.trailing, 8)
                 }
                 .buttonStyle(.plain)
-                .help("입력값 확인·수정")
+                .help("Review and edit inputs")
             }
         }
         .background(
@@ -314,7 +314,7 @@ private struct SkillRow: View {
 
     private var subtitleText: String {
         let missing = card.missingRequired().count
-        if missing > 0 { return "입력 \(missing)개 필요 · \(card.subtitle.isEmpty ? "/\(card.command)" : card.subtitle)" }
+        if missing > 0 { return "\(missing) input\(missing == 1 ? "" : "s") needed · \(card.subtitle.isEmpty ? "/\(card.command)" : card.subtitle)" }
         return card.subtitle.isEmpty ? "/\(card.command)" : card.subtitle
     }
 }
@@ -404,8 +404,8 @@ struct RunView: View {
         case .cancelled:
             VStack(spacing: 12) {
                 EmptyStateView(symbol: "stop.circle",
-                               title: "중단했습니다",
-                               message: "다시 실행하거나 입력값을 바꿀 수 있습니다.")
+                               title: "Stopped",
+                               message: "Run again or change the inputs.")
             }
         }
     }
@@ -423,7 +423,7 @@ struct RunView: View {
                 if card.params.isEmpty {
                     HStack(spacing: 7) {
                         Image(systemName: "sparkles").foregroundStyle(Color(hex: card.tint))
-                        Text("추가 입력 없이 바로 실행됩니다.").font(.system(size: 12))
+                        Text("Ready to run with no additional input.").font(.system(size: 12))
                     }
                     .padding(10)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -433,10 +433,10 @@ struct RunView: View {
                         HStack(spacing: 7) {
                             Image(systemName: "checkmark.seal.fill").foregroundStyle(Color(hex: card.tint))
                             VStack(alignment: .leading, spacing: 1) {
-                                Text("값이 미리 채워져 있습니다 — 그대로 실행하세요.")
+                                Text("Values are prefilled — run as is.")
                                     .font(.system(size: 11.5))
                                 if card.usesDynamicTokens {
-                                    Text("날짜·폴더는 실행하는 순간의 값으로 바뀝니다.")
+                                    Text("Dates and folders resolve when the skill runs.")
                                         .font(.system(size: 10)).foregroundStyle(.secondary)
                                 }
                             }
@@ -459,7 +459,7 @@ struct RunView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .background(RoundedRectangle(cornerRadius: 7).fill(Theme.subtleFill))
                 } label: {
-                    SectionLabel(text: "실행될 명령 미리보기")
+                    SectionLabel(text: "Command preview")
                 }
                 .font(.system(size: 11))
             }
@@ -472,7 +472,7 @@ struct RunView: View {
         VStack(spacing: 0) {
             HStack(spacing: 8) {
                 ProgressView().controlSize(.small)
-                Text(runner.currentStep.isEmpty ? "실행 중" : runner.currentStep)
+                Text(runner.currentStep.isEmpty ? "Running" : runner.currentStep)
                     .font(.system(size: 12, weight: .medium))
                     .lineLimit(1)
                 Spacer()
@@ -513,7 +513,7 @@ struct RunView: View {
                     Text(String(format: "%.1f초 · $%.4f", runner.elapsed, runner.costUSD))
                         .font(.system(size: 11)).foregroundStyle(.secondary)
                     Spacer()
-                    Button(showLog ? "결과 보기" : "진행 로그") {
+                    Button(showLog ? "View result" : "Activity log") {
                         withAnimation { showLog.toggle() }
                     }
                     .buttonStyle(SubtleButtonStyle())
@@ -544,7 +544,7 @@ struct RunView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(RoundedRectangle(cornerRadius: 10).fill(Color.orange.opacity(0.12)))
 
-                SectionLabel(text: "진행 로그")
+                SectionLabel(text: "Activity log")
                 VStack(alignment: .leading, spacing: 5) {
                     ForEach(runner.activity) { ActivityRow(line: $0, tint: card.tint) }
                 }
@@ -563,7 +563,7 @@ struct RunView: View {
                     LastValues.save(card.id, values)
                     runner.start(card: card, values: values)
                 } label: {
-                    Label(missingRequired.isEmpty ? "실행" : "필수 항목을 채워주세요",
+                    Label(missingRequired.isEmpty ? "Run" : "Fill in required inputs",
                           systemImage: "play.fill")
                 }
                 .buttonStyle(PrimaryButtonStyle(tint: card.tint, disabled: !missingRequired.isEmpty))
@@ -573,11 +573,11 @@ struct RunView: View {
                 Button {
                     runner.cancel()
                 } label: {
-                    Label("중단", systemImage: "stop.fill")
+                    Label("Stop", systemImage: "stop.fill")
                 }
                 .buttonStyle(SubtleButtonStyle())
                 Spacer()
-                Text("팝오버를 닫아도 계속 실행됩니다")
+                Text("It keeps running when you close this popover")
                     .font(.system(size: 10)).foregroundStyle(.secondary)
 
             case .success, .failed, .cancelled:
@@ -587,7 +587,7 @@ struct RunView: View {
                     copied = true
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) { copied = false }
                 } label: {
-                    Label(copied ? "복사됨" : "복사", systemImage: copied ? "checkmark" : "doc.on.doc")
+                    Label(copied ? "Copied" : "Copy", systemImage: copied ? "checkmark" : "doc.on.doc")
                 }
                 .buttonStyle(SubtleButtonStyle())
                 .disabled(runner.resultMarkdown.isEmpty)
@@ -596,7 +596,7 @@ struct RunView: View {
                     Button {
                         NSWorkspace.shared.open(url)
                     } label: {
-                        Label("파일 열기", systemImage: "doc.text")
+                        Label("Open file", systemImage: "doc.text")
                     }
                     .buttonStyle(SubtleButtonStyle())
                 }
@@ -606,7 +606,7 @@ struct RunView: View {
                 Button {
                     runner.reset()
                 } label: {
-                    Label("다시 실행", systemImage: "arrow.clockwise")
+                    Label("Run again", systemImage: "arrow.clockwise")
                 }
                 .buttonStyle(SubtleButtonStyle())
             }
@@ -679,7 +679,7 @@ struct ParamField: View {
             HStack(spacing: 4) {
                 Text(spec.label).font(.system(size: 11.5, weight: .semibold))
                 if spec.required {
-                    Text("필수").font(.system(size: 9, weight: .bold))
+                    Text("REQUIRED").font(.system(size: 9, weight: .bold))
                         .foregroundStyle(Color(hex: tint))
                 }
                 Spacer()
@@ -687,7 +687,7 @@ struct ParamField: View {
             control
             // 토큰은 값을 그대로 두고(다음 실행에도 갱신되도록) 지금 무엇이 될지만 알려준다.
             if PromptToken.containsToken(value) {
-                Text("실행하면 → \(PromptToken.expandAll(in: value))")
+                Text("At runtime → \(PromptToken.expandAll(in: value))")
                     .font(.system(size: 10, design: .monospaced))
                     .foregroundStyle(Color(hex: tint))
             }
@@ -726,7 +726,7 @@ struct ParamField: View {
 
         case .toggle:
             Toggle(isOn: Binding(get: { value == "true" }, set: { value = $0 ? "true" : "false" })) {
-                Text(spec.placeholder.isEmpty ? "사용" : spec.placeholder).font(.system(size: 11.5))
+                Text(spec.placeholder.isEmpty ? "Enter a value" : spec.placeholder).font(.system(size: 11.5))
             }
             .toggleStyle(.switch)
             .controlSize(.mini)
@@ -745,7 +745,7 @@ struct ParamField: View {
                     .font(.system(size: 12, design: .monospaced))
                     .padding(.horizontal, 8).padding(.vertical, 6)
                     .background(fieldBackground)
-                Button("오늘") {
+                Button("Today") {
                     let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"
                     value = f.string(from: Date())
                 }

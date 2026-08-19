@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
-# SkillDock 빌드 — Xcode 없이 swiftc + 수동 .app 번들로 만든다.
+# SkillsOnMenu 빌드 — Xcode 없이 swiftc + 수동 .app 번들로 만든다.
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
-APP_NAME="SkillDock"
+APP_NAME="SkillsOnMenu"
 BUILD_DIR="build"
 APP="$BUILD_DIR/$APP_NAME.app"
 MACOS_DIR="$APP/Contents/MacOS"
 RES_DIR="$APP/Contents/Resources"
-TARGET="${SKILLDOCK_TARGET:-$(uname -m)-apple-macos14.0}"
+TARGET="${SKILLSONMENU_TARGET:-${SKILLDOCK_TARGET:-$(uname -m)-apple-macos14.0}}"
 
 echo "▸ 정리"
 rm -rf "$APP"

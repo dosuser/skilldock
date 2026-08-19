@@ -13,47 +13,47 @@ try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories
 
 let samples: [SkillCard] = [
     {
-        var c = SkillCard(title: "트렌드 브리핑",
-                          subtitle: "GitHub·HuggingFace·업체 블로그에서 오늘 새로 뜬 것만 정리",
+        var c = SkillCard(title: "Trend Briefing",
+                          subtitle: "Today's new items from GitHub, Hugging Face, and company blogs",
                           emoji: "🚀", tint: "#7C5CFF",
                           command: "llmTrend",
-                          params: [ParamSpec(key: "request", label: "추가 요청",
-                                             help: "비워두면 스킬 기본 동작으로 실행됩니다.",
+                          params: [ParamSpec(key: "request", label: "Additional request",
+                                             help: "Leave blank to run the skill's default behavior.",
                                              kind: .longText,
-                                             placeholder: "예: 이미지 생성 모델만 골라줘")])
+                                             placeholder: "Example: focus on image generation models")])
         c.hotkey = HotKeySpec(keyCode: 40, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option)
         return c
     }(),
     // 필수 입력이 남아 있어 폼이 먼저 열리는 카드 (원클릭 카드와 대비된다).
-    SkillCard(title: "사내 문서 검색",
-              subtitle: "사내 문서에 물어보고 출처까지 정리",
+    SkillCard(title: "Document Search",
+              subtitle: "Search internal docs and collect sources",
               emoji: "🔍", tint: "#12B5CB",
               command: "naver-ask",
               params: [
-                ParamSpec(key: "query", label: "검색어", kind: .text,
-                          placeholder: "예: 브랜드 가이드 최신본", required: true),
-                ParamSpec(key: "output", label: "저장 경로", kind: .path,
+                ParamSpec(key: "query", label: "Search query", kind: .text,
+                          placeholder: "Example: latest brand guide", required: true),
+                ParamSpec(key: "output", label: "Save folder", kind: .path,
                           defaultValue: PromptToken.documents.placeholder),
               ]),
-    SkillCard(title: "작업일지 찾기",
-              subtitle: "어제 오늘 작업일지를 한 장으로 요약",
+    SkillCard(title: "Worklog Search",
+              subtitle: "Summarize recent worklogs in one page",
               emoji: "📝", tint: "#3DC98B",
               command: "worklog-search",
-              promptTemplate: "/worklog-search {{since}} 이후 일지를 {{limit}}건까지 요약해줘",
+              promptTemplate: "/worklog-search summarize up to {{limit}} worklogs since {{since}}",
               params: [
-                ParamSpec(key: "since", label: "시작 날짜", kind: .date,
+                ParamSpec(key: "since", label: "Start date", kind: .date,
                           defaultValue: PromptToken.weekAgo.placeholder),
-                ParamSpec(key: "limit", label: "개수", kind: .number, defaultValue: "10"),
+                ParamSpec(key: "limit", label: "Limit", kind: .number, defaultValue: "10"),
               ]),
-    SkillCard(title: "주간 보고 초안",
-              subtitle: "Jira 이슈를 모아 주간 보고 초안 생성",
+    SkillCard(title: "Weekly Report Draft",
+              subtitle: "Create a weekly-report draft from Jira issues",
               emoji: "📊", tint: "#FF7043",
               command: "weekly-report",
               params: [
-                ParamSpec(key: "week", label: "기준 주", kind: .date,
+                ParamSpec(key: "week", label: "Week", kind: .date,
                           defaultValue: PromptToken.today.placeholder),
-                ParamSpec(key: "env", label: "범위", kind: .select,
-                          options: ["내 이슈", "파트 전체", "팀 전체"], defaultValue: "파트 전체"),
+                ParamSpec(key: "env", label: "Scope", kind: .select,
+                          options: ["My issues", "Group", "Whole team"], defaultValue: "Group"),
               ]),
     // MCP 서버에서 만든 카드 — 요청 문장이 미리 채워져 그대로 실행된다.
     MCPServer(name: "metrics-mcp", transport: .http, endpoint: "metrics.example.com",
