@@ -28,7 +28,7 @@ enum ProcessRunner {
         env["PATH"] = parts.joined(separator: ":")
         env["HOME"] = home
         // 앱에서 실행한 세션임을 스킬·훅 쪽에서 구분할 수 있게 표시한다.
-        env["SKILLDOCK"] = "1"
+        env["SKILLSONMENU"] = "1"
         return env
     }
 

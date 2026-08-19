@@ -281,7 +281,7 @@ struct AppConfig: Codable {
     /// 단축키를 눌렀을 때 팝오버 대신 곧바로 실행할 카드.
     var quickRunCardID: UUID? = nil
     /// 결과를 저장할 폴더.
-    var resultDirectory: String = "~/SkillDock"
+    var resultDirectory: String = "~/SkillsOnMenu"
 
     enum CodingKeys: String, CodingKey {
         case version, claudePath, cards, openPopoverHotkey, quickRunCardID, resultDirectory
@@ -296,7 +296,7 @@ struct AppConfig: Codable {
         cards = try c.decodeIfPresent([SkillCard].self, forKey: .cards) ?? []
         openPopoverHotkey = try c.decodeIfPresent(HotKeySpec.self, forKey: .openPopoverHotkey)
         quickRunCardID = try c.decodeIfPresent(UUID.self, forKey: .quickRunCardID)
-        resultDirectory = try c.decodeIfPresent(String.self, forKey: .resultDirectory) ?? "~/SkillDock"
+        resultDirectory = try c.decodeIfPresent(String.self, forKey: .resultDirectory) ?? "~/SkillsOnMenu"
     }
 
     var resolvedResultDirectory: URL {

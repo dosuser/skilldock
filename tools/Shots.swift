@@ -13,51 +13,55 @@ try? FileManager.default.createDirectory(at: outDir, withIntermediateDirectories
 // MARK: 샘플 데이터
 
 func sampleCards() -> [SkillCard] {
-    var trend = SkillCard(title: "트렌드 브리핑",
-                          subtitle: "GitHub·HuggingFace·업체 블로그에서 오늘 새로 뜬 것만 정리",
+    var trend = SkillCard(title: "Trend Briefing",
+                          subtitle: "Today's new items from GitHub, Hugging Face, and company blogs",
                           emoji: "🚀", tint: "#7C5CFF",
                           command: "llmTrend",
-                          params: [ParamSpec(key: "request", label: "추가 요청",
-                                             help: "비워두면 스킬 기본 동작으로 실행됩니다.",
+                          params: [ParamSpec(key: "request", label: "Additional request",
+                                             help: "Leave blank to run the skill's default behavior.",
                                              kind: .longText,
-                                             placeholder: "예: 이미지 생성 모델만 골라줘")])
-    trend.hotkey = HotKeySpec(keyCode: 40, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option)
+                                             placeholder: "Example: focus on image generation models")])
+    trend.hotkey = HotKeySpec(keyCode: 17, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option) // ⌥⌘T
 
-    let ask = SkillCard(title: "사내 문서 검색",
-                        subtitle: "사내 문서에 물어보고 출처까지 정리",
+    var ask = SkillCard(title: "Document Search",
+                        subtitle: "Search internal docs and collect sources",
                         emoji: "🔍", tint: "#12B5CB",
                         command: "naver-ask",
                         params: [
-                            ParamSpec(key: "query", label: "검색어", help: "찾고 싶은 문서를 한 줄로 적습니다.",
-                                      kind: .text, placeholder: "예: 브랜드 가이드 최신본", required: true),
-                            ParamSpec(key: "output", label: "저장 폴더", kind: .path, placeholder: "~/Documents"),
+                            ParamSpec(key: "query", label: "Search query", help: "Describe the document you need in one line.",
+                                      kind: .text, placeholder: "Example: latest brand guide", required: true),
+                            ParamSpec(key: "output", label: "Save folder", kind: .path, placeholder: "~/Documents"),
                         ])
+    ask.hotkey = HotKeySpec(keyCode: 2, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option) // ⌥⌘D
 
-    let worklog = SkillCard(title: "작업일지 요약",
-                            subtitle: "지난 7일 일지를 한 장으로 요약",
+    var worklog = SkillCard(title: "Worklog Summary",
+                            subtitle: "Summarize the last seven days in one page",
                             emoji: "📝", tint: "#3DC98B",
                             command: "worklog-search",
-                            promptTemplate: "/worklog-search {{since}} 이후 일지를 {{limit}}건까지 요약해줘",
+                            promptTemplate: "/worklog-search summarize up to {{limit}} worklogs since {{since}}",
                             params: [
-                                ParamSpec(key: "since", label: "시작 날짜", kind: .date,
+                                ParamSpec(key: "since", label: "Start date", kind: .date,
                                           defaultValue: PromptToken.weekAgo.placeholder),
-                                ParamSpec(key: "limit", label: "개수", kind: .number, defaultValue: "10"),
+                                ParamSpec(key: "limit", label: "Limit", kind: .number, defaultValue: "10"),
                             ])
+    worklog.hotkey = HotKeySpec(keyCode: 13, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option) // ⌥⌘W
 
-    let weekly = SkillCard(title: "주간 보고 초안",
-                           subtitle: "Jira 이슈를 모아 주간 보고 초안 생성",
+    var weekly = SkillCard(title: "Weekly Report Draft",
+                           subtitle: "Create a weekly-report draft from Jira issues",
                            emoji: "📊", tint: "#FF7043",
                            command: "weekly-report",
                            params: [
-                               ParamSpec(key: "week", label: "기준 주", kind: .date,
+                               ParamSpec(key: "week", label: "Week", kind: .date,
                                          defaultValue: PromptToken.today.placeholder),
-                               ParamSpec(key: "scope", label: "범위", kind: .select,
-                                         options: ["내 이슈", "파트", "팀 전체"], defaultValue: "파트"),
+                               ParamSpec(key: "scope", label: "Scope", kind: .select,
+                                         options: ["My issues", "Group", "Whole team"], defaultValue: "Group"),
                            ])
+    weekly.hotkey = HotKeySpec(keyCode: 15, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option) // ⌥⌘R
 
     // MCP 서버에서 만든 카드 — 요청 문장이 미리 채워져 그대로 실행된다.
-    let mcp = MCPServer(name: "metrics-mcp", transport: .http, endpoint: "metrics.example.com",
+    var mcp = MCPServer(name: "metrics-mcp", transport: .http, endpoint: "metrics.example.com",
                         scope: .user, configPath: "~/.claude.json").makeCard()
+    mcp.hotkey = HotKeySpec(keyCode: 46, modifiers: HotKeyFormatter.cmd | HotKeyFormatter.option) // ⌥⌘M
 
     return [trend, ask, worklog, weekly, mcp]
 }
@@ -69,23 +73,23 @@ struct EditorShot: View {
 }
 
 let sampleResult = """
-# LLM 트렌드 — 2026-08-13
+# LLM Trends — 2026-08-13
 
-**오늘 새로 올라온 항목 7건**을 정리했다. 어제 리포트에 있던 항목은 제외했다.
+**Seven new items published today**, excluding items in yesterday's report.
 
-## GitHub 급상승
+## GitHub Rising
 
-| 프로젝트 | 스타 | 한 줄 |
+| Project | Stars | Summary |
 |---|---|---|
-| acme/fastvlm | +2,140 | 온디바이스 비전-언어 모델 |
-| oss/agent-mesh | +880 | 에이전트 간 메시지 라우팅 |
+| acme/fastvlm | +2,140 | On-device vision-language model |
+| oss/agent-mesh | +880 | Agent-to-agent message routing |
 
-## 업체 발표
+## Company announcements
 
-- **Anthropic** — 툴 실행 캐시 공개, 반복 호출 비용 40% 절감
-- **Google DeepMind** — 장문 요약 벤치마크 갱신
+- **Anthropic** — Tool-call cache reduces repeat-call cost by 40%
+- **Google DeepMind** — Long-context summarization benchmark update
 
-> 어제 대비 신규 비율 58% (7건 / 12건)
+> 58% new items compared with yesterday (7 of 12)
 
 ```bash
 open ~/llmTrend/2026-08-13.md
@@ -166,7 +170,7 @@ final class Shooter {
                 try? png.write(to: url)
                 print("PASS  \(name) → \(url.lastPathComponent) (\(png.count / 1024)KB)")
             } else {
-                print("FAIL  \(name) — 렌더 실패")
+            print("FAIL  \(name) — render failed")
             }
             w.close()
             self.window = nil
@@ -229,7 +233,7 @@ func step7() {
     let empty = PopoverRouter()
     shooter.shoot("07-empty", size: popoverSize,
                   view: HomeView(router: empty, onOpenLibrary: {}, onQuit: {}),
-                  then: { print("완료 — \(outDir.path)"); exit(0) })
+                  then: { print("Done — \(outDir.path)"); exit(0) })
 }
 
 DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { step1() }

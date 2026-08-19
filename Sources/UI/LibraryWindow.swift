@@ -14,7 +14,7 @@ final class LibraryWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "SkillDock — 스킬 관리"
+        window.title = "SkillsOnMenu — Skill Manager"
         window.titlebarAppearsTransparent = true
         window.isMovableByWindowBackground = true
         window.center()
@@ -69,7 +69,7 @@ struct LibraryView: View {
     private var sidebar: some View {
         VStack(spacing: 0) {
             HStack {
-                Text("등록된 스킬").font(Theme.title(13, .bold))
+                Text("Saved skills").font(Theme.title(13, .bold))
                 Spacer()
                 Text("\(store.config.cards.count)")
                     .font(.system(size: 11, weight: .medium)).foregroundStyle(.secondary)
@@ -99,8 +99,8 @@ struct LibraryView: View {
                     .padding(.vertical, 2)
                     .tag(Selection.card(card.id))
                     .contextMenu {
-                        Button("복제") { duplicate(card) }
-                        Button("삭제", role: .destructive) { store.remove(id: card.id) }
+                        Button("Duplicate") { duplicate(card) }
+                        Button("Delete", role: .destructive) { store.remove(id: card.id) }
                     }
                 }
                 .onMove { store.move(from: $0, to: $1) }
@@ -113,7 +113,7 @@ struct LibraryView: View {
                 Button {
                     showCatalog = true
                 } label: {
-                    Label("스킬 추가", systemImage: "plus").font(.system(size: 11.5, weight: .medium))
+                    Label("Add skill", systemImage: "plus").font(.system(size: 11.5, weight: .medium))
                 }
                 .buttonStyle(SubtleButtonStyle())
 
@@ -125,7 +125,7 @@ struct LibraryView: View {
                     Image(systemName: "gearshape").font(.system(size: 12))
                 }
                 .buttonStyle(.plain)
-                .help("앱 설정")
+                .help("App settings")
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 9)
@@ -149,23 +149,23 @@ struct LibraryView: View {
                 .id(id)
             } else {
                 EmptyStateView(symbol: "questionmark.square.dashed",
-                               title: "선택된 스킬이 없습니다",
-                               message: "왼쪽에서 스킬을 고르거나 새로 추가하세요.")
+                               title: "No skill selected",
+                               message: "Choose a skill on the left or add a new one.")
             }
         case .settings:
             SettingsView()
         case .none:
             EmptyStateView(symbol: "square.stack.3d.up",
-                           title: "스킬을 골라주세요",
-                           message: "왼쪽 목록에서 스킬을 선택하면 여기에서 편집할 수 있습니다.",
-                           actionTitle: "스킬 추가") { showCatalog = true }
+                           title: "Choose a skill",
+                           message: "Select a skill from the list to edit it here.",
+                           actionTitle: "Add skill") { showCatalog = true }
         }
     }
 
     private func duplicate(_ card: SkillCard) {
         var copy = card
         copy.id = UUID()
-        copy.title = card.title + " 사본"
+        copy.title = card.title + " Copy"
         copy.hotkey = nil
         store.upsert(copy)
         selection = .card(copy.id)
@@ -213,7 +213,7 @@ struct CardEditorView: View {
         HStack(spacing: 12) {
             EmojiBadge(emoji: card.emoji, tint: card.tint, size: 46)
             VStack(alignment: .leading, spacing: 2) {
-                Text(card.title.isEmpty ? "이름 없는 스킬" : card.title).font(Theme.title(18, .bold))
+                Text(card.title.isEmpty ? "Untitled skill" : card.title).font(Theme.title(18, .bold))
                 Text(card.subtitle.isEmpty ? "/\(card.command)" : card.subtitle)
                     .font(.system(size: 12)).foregroundStyle(.secondary)
             }
@@ -227,35 +227,35 @@ struct CardEditorView: View {
     // 원클릭 실행
     private var oneClickBlock: some View {
         Group {
-            SectionLabel(text: "원클릭 실행")
+            SectionLabel(text: "One-click run")
             VStack(alignment: .leading, spacing: 11) {
                 HStack(spacing: 8) {
                     Image(systemName: card.isReadyToRun ? "checkmark.circle.fill" : "exclamationmark.circle.fill")
                         .foregroundStyle(card.isReadyToRun ? .green : .orange)
                     if card.isReadyToRun {
-                        Text("준비됨 — 목록에서 누르면 그대로 실행됩니다.").font(.system(size: 12))
+                        Text("Ready — selecting it in the list runs it as is.").font(.system(size: 12))
                     } else {
-                        Text("입력 \(card.missingRequired().count)개가 비어 있어 폼이 먼저 열립니다.")
+                        Text("\(card.missingRequired().count) required input(s) are missing, so a form opens first.")
                             .font(.system(size: 12))
                     }
                     Spacer()
-                    Button("빈 값 자동 채우기") { autofill() }
+                    Button("Fill empty values") { autofill() }
                         .buttonStyle(SubtleButtonStyle())
                 }
                 Toggle(isOn: $card.instantRun) {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("목록에서 누르면 바로 실행").font(.system(size: 12))
-                        Text("끄면 항상 입력 폼을 먼저 보여줍니다.")
+                        Text("Run immediately from the list").font(.system(size: 12))
+                        Text("Turn it off to always show the input form first.")
                             .font(.system(size: 10)).foregroundStyle(.secondary)
                     }
                 }
                 if card.usesDynamicTokens {
-                    Label("날짜·폴더 토큰이 들어 있어 실행할 때마다 값이 갱신됩니다.",
+                    Label("Dates and folders resolve fresh every time the skill runs.",
                           systemImage: "clock.arrow.circlepath")
                         .font(.system(size: 10.5)).foregroundStyle(.secondary)
                 }
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("지금 실행하면 이렇게 보냅니다").font(.system(size: 10.5, weight: .semibold))
+                    Text("This is what it sends now").font(.system(size: 10.5, weight: .semibold))
                         .foregroundStyle(.secondary)
                     Text(card.renderPrompt(values: card.defaultValues))
                         .font(Theme.mono)
@@ -286,15 +286,15 @@ struct CardEditorView: View {
     // 표시
     private var appearanceBlock: some View {
         Group {
-            SectionLabel(text: "표시")
+            SectionLabel(text: "Appearance")
             VStack(alignment: .leading, spacing: 11) {
-                LabeledField("이름") {
+                LabeledField("Name") {
                     TextField("예: 트렌드 브리핑", text: $card.title).textFieldStyle(.roundedBorder)
                 }
                 LabeledField("한 줄 설명") {
-                    TextField("이 스킬이 무엇을 하는지", text: $card.subtitle).textFieldStyle(.roundedBorder)
+                    TextField("What this skill does", text: $card.subtitle).textFieldStyle(.roundedBorder)
                 }
-                LabeledField("아이콘") {
+                LabeledField("Icon") {
                     HStack(spacing: 5) {
                         TextField("✨", text: $card.emoji)
                             .textFieldStyle(.roundedBorder)
@@ -310,7 +310,7 @@ struct CardEditorView: View {
                         }
                     }
                 }
-                LabeledField("색상") {
+                LabeledField("Color") {
                     HStack(spacing: 6) {
                         ForEach(Theme.palette, id: \.self) { hex in
                             Button { card.tint = hex } label: {
@@ -333,9 +333,9 @@ struct CardEditorView: View {
     // 스킬 / 프롬프트
     private var commandBlock: some View {
         Group {
-            SectionLabel(text: "스킬")
+            SectionLabel(text: "Skill")
             VStack(alignment: .leading, spacing: 11) {
-                LabeledField("슬래시 커맨드") {
+                LabeledField("Slash command") {
                     HStack(spacing: 5) {
                         Text("/").foregroundStyle(.secondary)
                         TextField("llmTrend", text: $card.command).textFieldStyle(.roundedBorder)
@@ -343,9 +343,9 @@ struct CardEditorView: View {
                 }
                 VStack(alignment: .leading, spacing: 5) {
                     HStack {
-                        Text("실행 문장").font(.system(size: 11.5, weight: .semibold))
+                        Text("Run prompt").font(.system(size: 11.5, weight: .semibold))
                         Spacer()
-                        Text("{{항목이름}} 이 입력값으로 바뀝니다")
+                        Text("{{field_name}} is replaced by its input value")
                             .font(.system(size: 10)).foregroundStyle(.secondary)
                     }
                     TextEditor(text: $card.promptTemplate)
@@ -373,17 +373,17 @@ struct CardEditorView: View {
     private var paramBlock: some View {
         Group {
             HStack {
-                SectionLabel(text: "입력 항목 (\(card.params.count))")
+                SectionLabel(text: "Inputs (\(card.params.count))")
                 Spacer()
                 if aiBusy {
                     HStack(spacing: 5) {
                         ProgressView().controlSize(.small)
-                        Text("스킬을 읽고 있습니다…").font(.system(size: 10.5)).foregroundStyle(.secondary)
+                        Text("Reading skill…").font(.system(size: 10.5)).foregroundStyle(.secondary)
                     }
                 } else {
-                    Button("스킬에서 다시 추출") { rescan(useAI: false) }
+                    Button("Extract from skill") { rescan(useAI: false) }
                         .buttonStyle(SubtleButtonStyle())
-                    Button("AI로 추출") { rescan(useAI: true) }
+                    Button("Extract with AI") { rescan(useAI: true) }
                         .buttonStyle(SubtleButtonStyle())
                 }
             }
@@ -395,12 +395,12 @@ struct CardEditorView: View {
                              onDelete: { card.params.removeAll { $0.id == p.id } })
                 }
                 Button {
-                    var new = ParamSpec(key: uniqueKey(), label: "새 항목")
+                    var new = ParamSpec(key: uniqueKey(), label: "New input")
                     new.placeholder = ""
                     card.params.append(new)
                     editingParam = new
                 } label: {
-                    Label("항목 추가", systemImage: "plus.circle")
+                    Label("Add input", systemImage: "plus.circle")
                         .font(.system(size: 11.5, weight: .medium))
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 7)
@@ -417,11 +417,11 @@ struct CardEditorView: View {
     // 실행 옵션
     private var runBlock: some View {
         Group {
-            SectionLabel(text: "실행 설정")
+            SectionLabel(text: "Run settings")
             VStack(alignment: .leading, spacing: 11) {
-                LabeledField("작업 폴더") {
+                LabeledField("Working folder") {
                     HStack(spacing: 6) {
-                        TextField("비우면 홈 폴더", text: $card.run.workingDirectory)
+                        TextField("Leave blank for home folder", text: $card.run.workingDirectory)
                             .textFieldStyle(.roundedBorder)
                         Button {
                             let panel = NSOpenPanel()
@@ -434,9 +434,9 @@ struct CardEditorView: View {
                         .buttonStyle(SubtleButtonStyle())
                     }
                 }
-                LabeledField("모델") {
+                LabeledField("Model") {
                     Picker("", selection: $card.run.model) {
-                        Text("기본").tag("")
+                        Text("Default").tag("")
                         Text("Opus").tag("opus")
                         Text("Sonnet").tag("sonnet")
                         Text("Haiku").tag("haiku")
@@ -445,10 +445,10 @@ struct CardEditorView: View {
                     .pickerStyle(.segmented)
                     .frame(width: 280)
                 }
-                LabeledField("최대 실행 시간") {
+                LabeledField("Maximum run time") {
                     HStack(spacing: 6) {
                         Stepper(value: $card.run.timeoutSeconds, in: 60...7200, step: 60) {
-                            Text("\(card.run.timeoutSeconds / 60)분")
+                            Text("\(card.run.timeoutSeconds / 60) min")
                                 .font(.system(size: 12, design: .monospaced))
                         }
                         .frame(width: 130)
@@ -456,13 +456,13 @@ struct CardEditorView: View {
                 }
                 Toggle(isOn: $card.run.bypassPermissions) {
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("도구 권한 자동 승인").font(.system(size: 12))
-                        Text("대부분의 스킬은 파일 읽기·명령 실행이 필요합니다. 끄면 권한 대기 상태로 멈출 수 있습니다.")
+                        Text("Automatically approve tool permissions").font(.system(size: 12))
+                        Text("Most skills need to read files or run commands. Turning this off can leave a run waiting for permission.")
                             .font(.system(size: 10)).foregroundStyle(.secondary)
                     }
                 }
-                Toggle("완료되면 알림 보내기", isOn: $card.run.notifyOnFinish).font(.system(size: 12))
-                Toggle("세션 기록 남기지 않기", isOn: $card.run.ephemeral).font(.system(size: 12))
+                Toggle("Notify when finished", isOn: $card.run.notifyOnFinish).font(.system(size: 12))
+                Toggle("Do not retain session history", isOn: $card.run.ephemeral).font(.system(size: 12))
             }
             .padding(14)
             .background(blockBackground)
@@ -472,10 +472,10 @@ struct CardEditorView: View {
     // 단축키
     private var hotkeyBlock: some View {
         Group {
-            SectionLabel(text: "단축키")
+            SectionLabel(text: "Keyboard shortcut")
             HStack(spacing: 10) {
                 HotKeyRecorder(hotkey: $card.hotkey)
-                Text("이 스킬을 어디서나 바로 실행합니다.")
+                Text("Run this skill from anywhere.")
                     .font(.system(size: 10.5)).foregroundStyle(.secondary)
                 Spacer()
             }
@@ -488,7 +488,7 @@ struct CardEditorView: View {
         HStack {
             Spacer()
             Button(role: .destructive) { onDelete() } label: {
-                Label("이 스킬 삭제", systemImage: "trash").font(.system(size: 11.5))
+                Label("Delete this skill", systemImage: "trash").font(.system(size: 11.5))
             }
             .buttonStyle(SubtleButtonStyle())
         }
@@ -629,21 +629,21 @@ struct ParamEditorSheet: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text("입력 항목 편집").font(Theme.title(15, .bold))
+            Text("Edit input").font(Theme.title(15, .bold))
 
             Grid(alignment: .leading, horizontalSpacing: 10, verticalSpacing: 9) {
                 GridRow {
-                    Text("이름").font(.system(size: 11.5, weight: .semibold))
-                    TextField("사용자에게 보이는 이름", text: $spec.label).textFieldStyle(.roundedBorder)
+                    Text("Label").font(.system(size: 11.5, weight: .semibold))
+                    TextField("Name shown to users", text: $spec.label).textFieldStyle(.roundedBorder)
                 }
                 GridRow {
-                    Text("변수명").font(.system(size: 11.5, weight: .semibold))
-                    TextField("prompt 안에서 {{...}} 로 쓰입니다", text: $spec.key)
+                    Text("Variable name").font(.system(size: 11.5, weight: .semibold))
+                    TextField("Used as {{...}} in the prompt", text: $spec.key)
                         .textFieldStyle(.roundedBorder)
                         .font(.system(size: 12, design: .monospaced))
                 }
                 GridRow {
-                    Text("종류").font(.system(size: 11.5, weight: .semibold))
+                    Text("Type").font(.system(size: 11.5, weight: .semibold))
                     Picker("", selection: $spec.kind) {
                         ForEach(ParamKind.allCases) { k in
                             Label(k.label, systemImage: k.symbol).tag(k)
@@ -654,20 +654,20 @@ struct ParamEditorSheet: View {
                 }
                 if spec.kind == .select {
                     GridRow {
-                        Text("보기 목록").font(.system(size: 11.5, weight: .semibold))
-                        TextField("쉼표로 구분: dev, stage, real", text: $optionsText)
+                        Text("Options").font(.system(size: 11.5, weight: .semibold))
+                        TextField("Comma-separated: dev, stage, real", text: $optionsText)
                             .textFieldStyle(.roundedBorder)
                     }
                 }
                 GridRow {
-                    Text("기본값").font(.system(size: 11.5, weight: .semibold))
-                    TextField("채워두면 입력 없이 바로 실행됩니다", text: $spec.defaultValue)
+                    Text("Default value").font(.system(size: 11.5, weight: .semibold))
+                    TextField("Prefill to run without input", text: $spec.defaultValue)
                         .textFieldStyle(.roundedBorder)
                 }
                 GridRow {
                     Text("").frame(width: 1)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text("실행할 때 값이 바뀌는 토큰")
+                        Text("Tokens resolved at runtime")
                             .font(.system(size: 10)).foregroundStyle(.secondary)
                         HStack(spacing: 4) {
                             ForEach(ParamEditorSheet.tokenChoices, id: \.rawValue) { t in
@@ -679,24 +679,24 @@ struct ParamEditorSheet: View {
                     }
                 }
                 GridRow {
-                    Text("입력 예시").font(.system(size: 11.5, weight: .semibold))
-                    TextField("placeholder 로 흐리게 보입니다", text: $spec.placeholder)
+                    Text("Example input").font(.system(size: 11.5, weight: .semibold))
+                    TextField("Shown as placeholder text", text: $spec.placeholder)
                         .textFieldStyle(.roundedBorder)
                 }
                 GridRow {
-                    Text("설명").font(.system(size: 11.5, weight: .semibold))
-                    TextField("입력칸 아래 작게 보이는 안내", text: $spec.help).textFieldStyle(.roundedBorder)
+                    Text("Help text").font(.system(size: 11.5, weight: .semibold))
+                    TextField("Shown below the input", text: $spec.help).textFieldStyle(.roundedBorder)
                 }
                 GridRow {
                     Text("").frame(width: 1)
-                    Toggle("필수 입력", isOn: $spec.required).font(.system(size: 12))
+                    Toggle("Required", isOn: $spec.required).font(.system(size: 12))
                 }
             }
 
             HStack {
                 Spacer()
-                Button("취소") { dismiss() }.buttonStyle(SubtleButtonStyle())
-                Button("저장") {
+                Button("Cancel") { dismiss() }.buttonStyle(SubtleButtonStyle())
+                Button("Save") {
                     spec.key = ParamInference.sanitizeKey(spec.key)
                     spec.options = optionsText.components(separatedBy: ",")
                         .map { $0.trimmingCharacters(in: .whitespaces) }
@@ -1024,7 +1024,7 @@ struct SettingsView: View {
                     HStack(spacing: 10) {
                         Text("결과 저장 폴더").font(.system(size: 11.5, weight: .semibold))
                             .frame(width: 110, alignment: .leading)
-                        TextField("~/SkillDock", text: Binding(
+                        TextField("~/SkillsOnMenu", text: Binding(
                             get: { store.config.resultDirectory },
                             set: { store.config.resultDirectory = $0 }
                         ))

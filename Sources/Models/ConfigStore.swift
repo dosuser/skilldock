@@ -1,7 +1,7 @@
 import Foundation
 import Combine
 
-/// `~/.config/skilldock/config.json` 을 단일 진실 원천으로 쓰는 설정 저장소.
+/// `~/.config/skillsonmenu/config.json` 을 단일 진실 원천으로 쓰는 설정 저장소.
 final class ConfigStore: ObservableObject {
     static let shared = ConfigStore()
 
@@ -16,9 +16,13 @@ final class ConfigStore: ObservableObject {
 
     static var directory: URL {
         FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent(".config/skilldock", isDirectory: true)
+            .appendingPathComponent(".config/skillsonmenu", isDirectory: true)
     }
     static var fileURL: URL { directory.appendingPathComponent("config.json") }
+    static var legacyFileURL: URL {
+        FileManager.default.homeDirectoryForCurrentUser
+            .appendingPathComponent(".config/skilldock/config.json")
+    }
 
     private init() {
         config = ConfigStore.load() ?? AppConfig()
@@ -27,10 +31,16 @@ final class ConfigStore: ObservableObject {
     // MARK: 읽기/쓰기
 
     private static func load() -> AppConfig? {
-        guard let data = try? Data(contentsOf: fileURL) else { return nil }
         let dec = JSONDecoder()
         dec.dateDecodingStrategy = .iso8601
-        return try? dec.decode(AppConfig.self, from: data)
+        if let data = try? Data(contentsOf: fileURL), let cfg = try? dec.decode(AppConfig.self, from: data) {
+            return cfg
+        }
+        guard let data = try? Data(contentsOf: legacyFileURL),
+              let cfg = try? dec.decode(AppConfig.self, from: data) else { return nil }
+        // 기존 SkillDock 사용자는 첫 실행 시 카드를 잃지 않고 새 이름의 경로로 옮겨간다.
+        write(cfg)
+        return cfg
     }
 
     private func scheduleSave() {
@@ -57,7 +67,7 @@ final class ConfigStore: ObservableObject {
             let data = try enc.encode(cfg)
             try data.write(to: fileURL, options: .atomic)
         } catch {
-            NSLog("SkillDock: 설정 저장 실패 — \(error.localizedDescription)")
+            NSLog("SkillsOnMenu: failed to save settings — \(error.localizedDescription)")
         }
     }
 

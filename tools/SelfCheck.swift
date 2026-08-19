@@ -2,6 +2,9 @@
 // 빌드: ./tools/selfcheck.sh
 import Foundation
 
+// 검증이 실제 사용자 설정을 새 경로로 마이그레이션하거나 덮어쓰지 않게 한다.
+ConfigStore.persistenceEnabled = false
+
 var failures = 0
 func check(_ label: String, _ ok: Bool, _ detail: String = "") {
     print("\(ok ? "PASS" : "FAIL")  \(label)\(detail.isEmpty ? "" : " — \(detail)")")

@@ -20,7 +20,7 @@ final class MenuBarController: NSObject, NSPopoverDelegate {
             button.target = self
             button.action = #selector(statusItemClicked)
             button.sendAction(on: [.leftMouseUp, .rightMouseUp])
-            button.toolTip = "SkillDock — 스킬 바로 실행"
+            button.toolTip = "SkillsOnMenu — Run skills quickly"
         }
 
         let root = PopoverRootView(
@@ -48,7 +48,7 @@ final class MenuBarController: NSObject, NSPopoverDelegate {
     private static func icon(running: Bool) -> NSImage? {
         let name = running ? "bolt.horizontal.circle.fill" : "bolt.fill"
         let config = NSImage.SymbolConfiguration(pointSize: 15, weight: .medium)
-        let image = NSImage(systemSymbolName: name, accessibilityDescription: "SkillDock")?
+        let image = NSImage(systemSymbolName: name, accessibilityDescription: "SkillsOnMenu")?
             .withSymbolConfiguration(config)
         image?.isTemplate = true
         return image
@@ -69,7 +69,7 @@ final class MenuBarController: NSObject, NSPopoverDelegate {
         let menu = NSMenu()
         let cards = ConfigStore.shared.config.cards
         if cards.isEmpty {
-            let item = NSMenuItem(title: "등록된 스킬이 없습니다", action: nil, keyEquivalent: "")
+            let item = NSMenuItem(title: "No saved skills", action: nil, keyEquivalent: "")
             item.isEnabled = false
             menu.addItem(item)
         } else {
@@ -83,10 +83,10 @@ final class MenuBarController: NSObject, NSPopoverDelegate {
             }
         }
         menu.addItem(.separator())
-        let manage = NSMenuItem(title: "스킬 관리 · 설정…", action: #selector(menuOpenLibrary), keyEquivalent: ",")
+        let manage = NSMenuItem(title: "Manage Skills & Settings…", action: #selector(menuOpenLibrary), keyEquivalent: ",")
         manage.target = self
         menu.addItem(manage)
-        let quit = NSMenuItem(title: "SkillDock 종료", action: #selector(menuQuit), keyEquivalent: "q")
+        let quit = NSMenuItem(title: "Quit SkillsOnMenu", action: #selector(menuQuit), keyEquivalent: "q")
         quit.target = self
         menu.addItem(quit)
 
