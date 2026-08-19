@@ -14,7 +14,7 @@ SkillsOnMenu is not a general-purpose skill manager. It is the fast execution
 surface for recurring Claude Code skills and MCP workflows: open the macOS menu
 bar, choose an action, and run it without rebuilding the same terminal command.
 
-Read the design story: [Why a menu-bar launcher for Claude Code skills?](https://blog.dosuser.com/2026/08/19/skills-on-menu-claude-code-skill-launcher-macos/)
+Read the design story: [Why a menu-bar launcher for Claude Code skills?](https://blog.dosuser.com/2026/08/19/skills-on-menu-claude-code-skill-launcher-macos.html)
 
 ## Install
 

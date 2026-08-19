@@ -14,7 +14,7 @@ SkillsOnMenu은 범용 스킬 관리 앱이 아닙니다. 자주 쓰는 Claude C
 워크플로를 메뉴바에서 찾아 즉시 실행하는 화면입니다. 매번 터미널 명령을 다시
 조합하지 않아도 됩니다.
 
-제작 배경은 [왜 Claude Code 스킬에 메뉴바 런처가 필요한가](https://blog.dosuser.com/2026/08/19/skills-on-menu-claude-code-skill-launcher-macos/)에서 읽을 수 있습니다.
+제작 배경은 [왜 Claude Code 스킬에 메뉴바 런처가 필요한가](https://blog.dosuser.com/2026/08/19/skills-on-menu-claude-code-skill-launcher-macos.html)에서 읽을 수 있습니다.
 
 ## 설치
 
