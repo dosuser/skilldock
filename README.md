@@ -20,9 +20,6 @@ Read the design story: [Why a menu-bar launcher for Claude Code skills?](https:/
 
 ### Homebrew
 
-The Homebrew cask is being renamed for the public launch. Until the
-`skills-on-menu` cask is published, build from source below.
-
 ```sh
 brew tap dosuser/skills-on-menu
 brew install --cask skills-on-menu
